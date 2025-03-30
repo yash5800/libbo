@@ -1,39 +1,41 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { Stack } from "expo-router";
+import { createContext, useEffect, useState } from "react";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+interface data_type{
+  recommendations: [];
+  setRecommendations?: any;
+}
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+export const context = createContext<data_type>({
+  recommendations: [],
+  setRecommendations: () => {},
+})
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
+export default function RootLayout() {  
+  const [recommendations, setRecommendations] = useState<any>([]);
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+    const fetchRecommendations = async () => {
+      try{
+        const res = await fetch('http://192.168.74.201:5000/api/top');
+        if(res.ok) {
+          const data = await res.json();
+          setRecommendations(data);
+          console.log(data);
+        }
+      }
+      catch (error) {
+        console.error('Error fetching recommendations:', error);
+      }
+    };
 
-  if (!loaded) {
-    return null;
-  }
+    fetchRecommendations();
+  },[setRecommendations]);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <context.Provider value={{ recommendations:recommendations, setRecommendations:setRecommendations }}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
+       <Stack.Screen name="(tabs)" options={{headerShown: false}} />
       </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    </context.Provider>
+  ) ;
 }

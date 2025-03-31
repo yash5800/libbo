@@ -35,6 +35,8 @@ export default function Index() {
   const openBook = useCallback(()=>{
        router.push('/book')
   },[setAct,act_book])
+
+  const fallbackImage = 'https://raw.githubusercontent.com/yash5800/libbo/master/assets/books_images/no_cover.jpg';
   
 
 
@@ -59,7 +61,8 @@ export default function Index() {
             openBook();
           }}>
           <Image source={{uri: `https://raw.githubusercontent.com/yash5800/libbo/master/assets/books_images/${item.url}`}} 
-            className="w-[160px] h-[200px] " resizeMode="contain" />
+            className="w-[160px] h-[200px] " resizeMode="contain" 
+            />
           </TouchableOpacity>
         </View>
       ))

@@ -41,7 +41,7 @@ export default function Index() {
 
 
   return (
-    <SafeAreaView className="w-full h-full bg-slate-800 flex flex-col justify-between">
+    <SafeAreaView className="w-full h-full bg-slate-800 flex flex-col justify-between pb-14">
      <ScrollView
       showsVerticalScrollIndicator={false}
      >
